@@ -4,11 +4,16 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-goog
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { createStackNavigator, createAppContainer, } from 'react-navigation';
 import firebase from 'react-native-firebase'
+import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
 import MainScreen from './screens/MainScreen';
 
 class HomeScreen extends Component {
+    componentDidMount() {
+        SplashScreen.hide();
+    }
+
     state = { userDetails: '', GoogleLogin: false, }
 
     render() {
