@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Project1</string>
+   <string name="facebook_app_id">Project1</string>
 </resources>

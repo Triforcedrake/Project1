@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "firebase": "^5.8.5",
+    "firebase-auth": "^0.1.2",
     "react": "16.6.3",
     "react-native": "0.58.6",
+    "react-native-fbsdk": "^0.8.0",
     "react-native-firebase": "^5.2.3",
     "react-native-gesture-handler": "^1.0.17",
     "react-native-google-signin": "^1.2.1",
