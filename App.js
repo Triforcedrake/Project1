@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, StatusBar, Image, Button } from 'react-native'
+import { StyleSheet, View, Text, StatusBar, Image, Button, TouchableOpacity } from 'react-native'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { createStackNavigator, createAppContainer, } from 'react-navigation';
 import firebase from 'react-native-firebase'
 
+import ChatScreen from './screens/ChatScreen';
+import MainScreen from './screens/MainScreen';
 
-export default class App extends Component {
+class HomeScreen extends Component {
     state = { userDetails: '', GoogleLogin: false, }
 
     render() {
@@ -32,6 +35,13 @@ export default class App extends Component {
                         title="Sign in with facebook"
                         color="#3c50e8"
                     />
+
+                    <TouchableOpacity
+                        style={styles.testButton}
+                        onPress={() => this.props.navigation.navigate('Main')}
+                    >
+                        <Text>Test Login</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={this.state.GoogleLogin ? styles.userDetailContainer : { display: 'none' }}>
@@ -94,6 +104,38 @@ export default class App extends Component {
         console.error(e);
     }
 }
+}
+
+const Rootstack = createStackNavigator(
+    {
+        Home: HomeScreen,
+        Main: MainScreen,
+        Chat: ChatScreen,
+
+    },
+    {
+        initialRouteName: 'Home',
+        defaultNavigationOptions: {
+            headerStyle: {
+                backgroundColor: '#1e90ff'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1
+            }
+        }
+    }
+);
+
+const AppContainer = createAppContainer(Rootstack);
+
+export default class App extends Component {
+    render() {
+        return (
+            <AppContainer />
+        );
+    }
 }
 
 /*   ignOut = async () => {
@@ -175,5 +217,8 @@ const styles = StyleSheet.create({
     },
     txtName: {
         color: 'black', margin: 10, fontSize: 13,
-    }
+    },
+    testButton: {
+        color: 'blue' , flex: 1, 
+    },
 })
