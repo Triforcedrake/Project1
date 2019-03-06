@@ -17,36 +17,34 @@ class HomeScreen extends Component {
     state = { userDetails: '', GoogleLogin: false, }
 
     render() {
+        const { userDetails } = this.state;
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor='#FF7043'>
                 </StatusBar>
 
                 <View style={styles.headerContainer}>
-                    <Text style={styles.headerTxt}>Home Screen</Text>
+                    <Text style={styles.headerTxt}>Home Screen {"\n"}
+                                 Welcome {userDetails.name}!
+                        </Text>
                 </View>
 
                 <View style={this.state.GoogleLogin ? { display: "none" } : styles.signinContainer}>
 
                     <GoogleSigninButton
-                        style={{ width: 192, height: 50 }}
+                        style={{ width: 192, height: 50, alignSelf: 'center' }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
-                        onPress={this.googleSignIn}>
+                        onPress={this.onLoginGoogle}>
                     </GoogleSigninButton>
 
                     <Button
+                        style={{ width: 192, height: 50, alignSelf: 'center' }}
                         onPress={this.fbSignIn}
                         title="Sign in with facebook"
                         color="#3c50e8"
                     />
 
-                    <TouchableOpacity
-                        style={styles.testButton}
-                        onPress={() => this.props.navigation.navigate('Main')}
-                    >
-                        <Text>Test Login</Text>
-                    </TouchableOpacity>
                 </View>
 
                 <View style={this.state.GoogleLogin ? styles.userDetailContainer : { display: 'none' }}>
@@ -61,54 +59,111 @@ class HomeScreen extends Component {
         )
     }
 
-    googleSignIn = async () => {
+    onLoginGoogle = async () => {
         try {
             // add any configuration settings here:
             await GoogleSignin.configure();
 
             const data = await GoogleSignin.signIn();
 
+            this.setState({
+                GoogleLogin: true, userDetails: data.user,
+            })
+
+            if (data.isCancelled) {
+                // handle this however suites the flow of your app
+                Alert.alert(
+                    'User cancelled request'
+                );
+            }
+
+            this.setState({ data });
             // create a new firebase credential with the token
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
             // login with credential
-            const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+            const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
+                .then((data) => {
+                    this.props.navigation.navigate('Main')
+                })
 
-            console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()));
+                .catch((error) => {
+                    console.log('ERROR', error)
+                });
+
+            // console.warn(JSON.stringify(firebaseUserCredential.data.toJSON()));
+
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+
+
+    fbSignIn = async () => {
+        try {
+            const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
+
+            if (result.isCancelled) {
+                // handle this however suites the flow of your app
+                Alert.alert(
+                    'User cancelled request'
+                );
+            }
+
+            console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+
+            this.setState({ data });
+            // get the access token
+            const data = await AccessToken.getCurrentAccessToken();
+
+            if (!data) {
+                // handle this however suites the flow of your app
+                throw new Error('Something went wrong obtaining the users access token');
+            }
+
+            // create a new firebase credential with the token
+            const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+            // login with credential
+            const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
+                .then((data) => {
+                    this.props.navigation.navigate('Main')
+                })
+
+                .catch((error) => {
+                    console.log('ERROR', error)
+                });
+
+            console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
         } catch (e) {
             console.error(e);
         }
     }
 
-    fbSignIn = async () => {
-    try {
-        const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
+    signOut = async () => {
+        try {
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
+            this.setState({
+                data: null,
+                userDetails: '',
+                GoogleLogin: false,
+            });
+        } catch (error) {
+            console.error(error);
 
-        if (result.isCancelled) {
-            // handle this however suites the flow of your app
-            throw new Error('User cancelled request');
         }
+        /*   try {
+               await LoginManager.revokeAccess();
+               await LoginManager.signOut();
+               this.setState({ data: null 
+               }); 
+           } catch (error) {
+               console.error(error);
+           }
+        */
 
-        console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
-
-        // get the access token
-        const data = await AccessToken.getCurrentAccessToken();
-
-        if (!data) {
-            // handle this however suites the flow of your app
-            throw new Error('Something went wrong obtaining the users access token');
-        }
-
-        // create a new firebase credential with the token
-        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-
-        // login with credential
-        const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
-
-        console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
-    } catch (e) {
-        console.error(e);
-    }
-}
+    };
 }
 
 const Rootstack = createStackNavigator(
@@ -224,6 +279,6 @@ const styles = StyleSheet.create({
         color: 'black', margin: 10, fontSize: 13,
     },
     testButton: {
-        color: 'blue' , flex: 1, 
+        color: 'blue', flex: 1,
     },
 })
