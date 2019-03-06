@@ -7,6 +7,7 @@ import firebase from 'react-native-firebase'
 import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
+//Note to self, remove MainScreen, it is obsolete
 import MainScreen from './screens/MainScreen';
 
 class HomeScreen extends Component {
@@ -25,7 +26,7 @@ class HomeScreen extends Component {
 
                 <View style={styles.headerContainer}>
                     <Text style={styles.headerTxt}>Home Screen {"\n"}
-                                 Welcome {userDetails.name}!
+                                 Welcome {userDetails.name}
                         </Text>
                 </View>
 
@@ -51,7 +52,7 @@ class HomeScreen extends Component {
 
                     <Image style={styles.userImage} source={{ uri: this.state.userDetails.photo }}></Image>
                     <Text style={styles.txtEmail}>{this.state.userDetails.email}</Text>
-                    <Text style={styles.txtName}>{this.state.userDetails.name}</Text>
+                    <Text style={styles.txtName}>{this.state.userDetails.name}</Text>     
                     <Button color="#FF5722" title='Logout' onPress={this.signOut}></Button>
                 </View>
 
@@ -83,7 +84,7 @@ class HomeScreen extends Component {
             // login with credential
             const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
                 .then((data) => {
-                    this.props.navigation.navigate('Main')
+                    this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
                 })
 
                 .catch((error) => {
