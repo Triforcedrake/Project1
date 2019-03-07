@@ -7,6 +7,7 @@ import firebase from 'react-native-firebase'
 import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
+import styles from './screens/stylesheet/Style';
 
 class HomeScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
@@ -182,41 +183,3 @@ export default class App extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    background: {
-        flex: 1,
-    },
-    headerContainer: {
-        width: '100%', height: 40, justifyContent: 'center', backgroundColor: '#FF5722',
-    },
-    headerTxt: {
-        fontSize: 13, color: 'white', alignSelf: 'center',
-    },
-    signinContainer: {
-        flex: 1, justifyContent: 'center', alignItems: 'center',
-    },
-    userDetailContainer: {
-        flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center'
-    },
-    userImage: {
-        width: 100, height: 100,
-    },
-    txtEmail: {
-        color: 'black', marginTop: 10, fontSize: 13,
-    },
-    txtName: {
-        color: 'black', margin: 10, fontSize: 13,
-    },
-    testButton: {
-        color: 'blue', flex: 1,
-    },
-    googleButton: {
-        width: 200, height: 50, alignSelf: 'center',
-    },
-})
