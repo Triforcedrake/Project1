@@ -1,16 +1,14 @@
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; 
+import { View, ImageBackground } from 'react-native';
 
 import Fire from '../Fire';
 
-type Props = {
-    name?: string,
-};
-
-class ChatScreen extends React.Component<Props> {
+class ChatScreen extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
         title: (navigation.state.params || {}).name || 'Chat!',
+        headerRight: <View />
     });
 
     state = {

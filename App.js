@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, StatusBar, Image, Button, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, StatusBar, Image, Button, ImageBackground, Spacer } from 'react-native'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { AccessToken, LoginManager, LoginButton } from 'react-native-fbsdk';
 import { createStackNavigator, createAppContainer, } from 'react-navigation';
 import firebase from 'react-native-firebase'
 import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
-//Note to self, remove MainScreen, it is obsolete
-import MainScreen from './screens/MainScreen';
 
 class HomeScreen extends Component {
+    static navigationOptions = ({ navigation }) => ({
+        title: 'Welcome',
+    });
+
     componentDidMount() {
         SplashScreen.hide();
     }
@@ -21,38 +23,26 @@ class HomeScreen extends Component {
         const { userDetails } = this.state;
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor='#FF7043'>
-                </StatusBar>
-
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerTxt}>Home Screen {"\n"}
-                                 Welcome {userDetails.name}
-                        </Text>
-                </View>
 
                 <View style={this.state.GoogleLogin ? { display: "none" } : styles.signinContainer}>
-
                     <GoogleSigninButton
-                        style={{ width: 192, height: 50, alignSelf: 'center' }}
+                        style={styles.googleButton}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
                         onPress={this.onLoginGoogle}>
                     </GoogleSigninButton>
 
-                    <Button
-                        style={{ width: 192, height: 50, alignSelf: 'center' }}
-                        onPress={this.fbSignIn}
-                        title="Sign in with facebook"
-                        color="#3c50e8"
-                    />
+                    <View style={{ padding: 25, }}>
+                    </View>
 
+                    <LoginButton
+                        onPress={this.fbSignIn}
+                    />
                 </View>
 
                 <View style={this.state.GoogleLogin ? styles.userDetailContainer : { display: 'none' }}>
-
-                    <Image style={styles.userImage} source={{ uri: this.state.userDetails.photo }}></Image>
                     <Text style={styles.txtEmail}>{this.state.userDetails.email}</Text>
-                    <Text style={styles.txtName}>{this.state.userDetails.name}</Text>     
+                    <Text style={styles.txtName}>{this.state.userDetails.name}</Text>
                     <Button color="#FF5722" title='Logout' onPress={this.signOut}></Button>
                 </View>
 
@@ -74,7 +64,10 @@ class HomeScreen extends Component {
             if (data.isCancelled) {
                 // handle this however suites the flow of your app
                 Alert.alert(
-                    'User cancelled request'
+                    'User cancelled request',
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]
                 );
             }
 
@@ -91,7 +84,7 @@ class HomeScreen extends Component {
                     console.log('ERROR', error)
                 });
 
-            // console.warn(JSON.stringify(firebaseUserCredential.data.toJSON()));
+            //console.warn(JSON.stringify(firebaseUserCredential.data.toJSON()));
 
         }
         catch (e) {
@@ -102,40 +95,32 @@ class HomeScreen extends Component {
 
     fbSignIn = async () => {
         try {
-            const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
-
-            if (result.isCancelled) {
-                // handle this however suites the flow of your app
-                Alert.alert(
-                    'User cancelled request'
-                );
-            }
-
-            console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
-
-            this.setState({ data });
-            // get the access token
-            const data = await AccessToken.getCurrentAccessToken();
-
-            if (!data) {
-                // handle this however suites the flow of your app
-                throw new Error('Something went wrong obtaining the users access token');
-            }
-
-            // create a new firebase credential with the token
-            const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-
-            // login with credential
-            const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
-                .then((data) => {
-                    this.props.navigation.navigate('Main')
-                })
-
-                .catch((error) => {
-                    console.log('ERROR', error)
-                });
-
-            console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
+            const result = await LoginManager.logInWithReadPermissions(['email', 'password'])
+                .then(
+                    (result) => {
+                        if (result.isCancelled) {
+                            AccessToken.getCurrentAccessToken()
+                                .then((data) => {
+                                    const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+                                    firebase.auth().signInWithCredential(credential)
+                                        .then(loginUserSuccess(dispatch))
+                                    this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
+                                        .catch((error) => {
+                                            loginSingUpFail(dispatch, error.message);
+                                        });
+                                });
+                        } else {
+                            Alert.alert(
+                                'User cancelled request',
+                                [
+                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                ]
+                            );
+                        }
+                    },
+                    (error) => {
+                        console.log('ERROR', error)
+                    });
         } catch (e) {
             console.error(e);
         }
@@ -170,7 +155,6 @@ class HomeScreen extends Component {
 const Rootstack = createStackNavigator(
     {
         Home: HomeScreen,
-        Main: MainScreen,
         Chat: ChatScreen,
 
     },
@@ -199,70 +183,20 @@ export default class App extends Component {
     }
 }
 
-/*   ignOut = async () => {
-       try {
-           await GoogleSignin.revokeAccess();
-           await GoogleSignin.signOut()
-           this.setState({
-               userDetails: '',
-               GoogleLogin: false,
-           })
-       } catch (error) {
-           console.log(error.toString())
-       }
-   }
-
-   signIn = async () => {
-       try {
-           await GoogleSignin.hasPlayServices();
-           const userInfo = await GoogleSignin.signIn();
-           console.log('User Details', JSON.stringify(userInfo))
-
-           this.setState({
-               GoogleLogin: true, userDetails: userInfo.user,
-           })
-
-       } catch (error) {
-           this.setState({ GoogleLogin: false, })
-           if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-               console.log("Cancel ", statusCodes.SIGN_IN_CANCELLED)
-               // user cancelled the login flow 
-           } else if (error.code === statusCodes.IN_PROGRESS) {
-               console.log("InProgress ", statusCodes.IN_PROGRESS)
-               // operation (f.e. sign in) is in progress already 
-           } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-               console.log("Not Available ", statusCodes.PLAY_SERVICES_NOT_AVAILABLE) 
-               // play services not available or outdated 
-           } else { console.log("Error ", error) }
-       }
-   };
-
-
-}
-
-GoogleSignin.configure({
-   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile 
-   webClientId: '602222878267-1ki3ucs1nso4t4scrnh5mem9sr6mjd20.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access) 
-   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER 
-   hostedDomain: '', // specifies a hosted domain restriction 
-   loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd) 
-   forceConsentPrompt: true, // [Android] if you want to show the authorization prompt at each login. 
-   accountName: '', // [Android] specifies an account name on the device that should be used // 
-   iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist) 
-});
-*/
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    background: {
+        flex: 1,
+    },
     headerContainer: {
         width: '100%', height: 40, justifyContent: 'center', backgroundColor: '#FF5722',
     },
     headerTxt: {
-        fontSize: 13, color: 'white', alignSelf: 'center'
+        fontSize: 13, color: 'white', alignSelf: 'center',
     },
     signinContainer: {
         flex: 1, justifyContent: 'center', alignItems: 'center',
@@ -281,5 +215,8 @@ const styles = StyleSheet.create({
     },
     testButton: {
         color: 'blue', flex: 1,
+    },
+    googleButton: {
+        width: 200, height: 50, alignSelf: 'center',
     },
 })
