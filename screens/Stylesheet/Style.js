@@ -8,7 +8,6 @@ export default styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     background: {
         flex: 1,
@@ -20,23 +19,36 @@ export default styles = StyleSheet.create({
     },
     userDetailContainer: {
         flex: 1,
-        width: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },
     txtEmail: {
         color: 'black',
         marginTop: 10,
-        fontSize: 13,
+        fontSize: 20,
     },
     txtName: {
         color: 'black',
         margin: 10,
-        fontSize: 13,
+        fontSize: 20,
     },
     googleButton: {
         width: 200,
         height: 50,
         alignSelf: 'center',
+    },
+    subtitleView: {
+        flexDirection: 'row',
+        paddingLeft: 10,
+        paddingTop: 5
+    },
+    listContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignSelf: 'center',
+        width: '100%',
+    },
+    titles: {
+        color: 'blue',
     },
 })

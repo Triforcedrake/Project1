@@ -1,15 +1,25 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, StatusBar, Image, Button, ImageBackground, Spacer } from 'react-native'
+import { View, Text, Image, Button, ImageBackground, FlatList, Alert, StyleSheet } from 'react-native'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
-import { AccessToken, LoginManager, LoginButton } from 'react-native-fbsdk';
-import { createStackNavigator, createAppContainer, } from 'react-navigation';
+import { AccessToken, LoginManager, LoginButton } from 'react-native-fbsdk'
+import { createStackNavigator, createAppContainer, } from 'react-navigation'
+import { ListItem, List } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
 import styles from './screens/stylesheet/Style';
 
+const categoriesList = [
+    'Aperitivos',
+    'Bebidas',
+    'Lácteos',
+    'Frutas',
+    'Vegetales'
+];
+
 class HomeScreen extends Component {
+
     static navigationOptions = ({ navigation }) => ({
         title: 'Welcome',
     });
@@ -18,13 +28,23 @@ class HomeScreen extends Component {
         SplashScreen.hide();
     }
 
-    state = { userDetails: '', GoogleLogin: false, }
+    state = { userDetails: '', GoogleLogin: false, }    
 
     render() {
         const { userDetails } = this.state;
+
+        const list = [
+            {
+                name: 'Chat Room 1',
+            },
+            {
+                name: 'Chat Room 2',
+            },
+        ];
+
         return (
             <View style={styles.container}>
-
+              
                 <View style={this.state.GoogleLogin ? { display: "none" } : styles.signinContainer}>
                     <GoogleSigninButton
                         style={styles.googleButton}
@@ -47,6 +67,18 @@ class HomeScreen extends Component {
                     <Button color="#FF5722" title='Logout' onPress={this.signOut}></Button>
                 </View>
 
+                <View style={this.state.GoogleLogin ? styles.listContainer : { display: 'none' }}>
+                    {
+                        list.map((l) => (
+                            <ListItem
+                                key={l.name}
+                                title={l.name}
+                                onPress={() => this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })}
+                                chevron
+                        />
+                    ))
+                }
+                </View>
             </View>
         )
     }
@@ -68,7 +100,8 @@ class HomeScreen extends Component {
                     'User cancelled request',
                     [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]
+                    ],
+                    { cancelable: false },
                 );
             }
 
@@ -78,15 +111,12 @@ class HomeScreen extends Component {
             // login with credential
             const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
                 .then((data) => {
-                    this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
+                    //this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
                 })
 
                 .catch((error) => {
                     console.log('ERROR', error)
                 });
-
-            //console.warn(JSON.stringify(firebaseUserCredential.data.toJSON()));
-
         }
         catch (e) {
             console.error(e);
@@ -100,23 +130,25 @@ class HomeScreen extends Component {
                 .then(
                     (result) => {
                         if (result.isCancelled) {
+                            Alert.alert(
+                                'User cancelled request',
+                                [
+                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                ],
+                                { cancelable: false },
+                            );
+                        } else {
+
                             AccessToken.getCurrentAccessToken()
                                 .then((data) => {
                                     const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
                                     firebase.auth().signInWithCredential(credential)
                                         .then(loginUserSuccess(dispatch))
-                                    this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
+                                    this.props.navigation.navigate('Chat', { name: this.state.userDetails.name, email: this.state.userDetails.email })
                                         .catch((error) => {
                                             loginSingUpFail(dispatch, error.message);
                                         });
                                 });
-                        } else {
-                            Alert.alert(
-                                'User cancelled request',
-                                [
-                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                                ]
-                            );
                         }
                     },
                     (error) => {

@@ -18,7 +18,7 @@ class Fire {
 
     observeAuth = () =>
         firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
-
+    
     onAuthStateChanged = user => {
         if (!user) {
             try {
@@ -28,11 +28,12 @@ class Fire {
             }
         }
     };
-
+    
     get uid() {
         return (firebase.auth().currentUser || {}).uid;
     }
-
+    //This defines where the chat is stored. Duplicating all code here and changing this value would allow you setup a new chat room easily,
+    //but I am certain that there is a more efficient way to do. 
     get ref() {
         return firebase.database().ref('messages');
     }
@@ -52,7 +53,7 @@ class Fire {
 
     on = callback =>
         this.ref
-            .limitToLast(20)
+            .limitToLast(50)
             .on('child_added', snapshot => callback(this.parse(snapshot)));
 
     get timestamp() {
