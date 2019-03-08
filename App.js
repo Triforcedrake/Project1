@@ -10,14 +10,6 @@ import SplashScreen from 'react-native-splash-screen'
 import ChatScreen from './screens/ChatScreen';
 import styles from './screens/stylesheet/Style';
 
-const categoriesList = [
-    'Aperitivos',
-    'Bebidas',
-    'Lácteos',
-    'Frutas',
-    'Vegetales'
-];
-
 class HomeScreen extends Component {
 
     static navigationOptions = ({ navigation }) => ({
