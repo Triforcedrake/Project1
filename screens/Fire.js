@@ -1,3 +1,4 @@
+//Firebase setup for handling the chat system
 import firebase from 'firebase'; // 4.8.1
 
 class Fire {

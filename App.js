@@ -3,12 +3,13 @@ import { View, Text, Image, Button, ImageBackground, FlatList, Alert, StyleSheet
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
 import { AccessToken, LoginManager, LoginButton } from 'react-native-fbsdk'
 import { createStackNavigator, createAppContainer, } from 'react-navigation'
-import { ListItem, List } from 'react-native-elements'
+import { ListItem, List, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import SplashScreen from 'react-native-splash-screen'
 
 import ChatScreen from './screens/ChatScreen';
-import styles from './screens/stylesheet/Style';
+import ChatScreen2 from './screens/ChatScreen2';
+import styles from './screens/Stylesheet/Style';
 
 class HomeScreen extends Component {
 
@@ -20,23 +21,28 @@ class HomeScreen extends Component {
         SplashScreen.hide();
     }
 
-    state = { userDetails: '', GoogleLogin: false, }    
+    state = { userDetails: '', GoogleLogin: false, }
 
     render() {
         const { userDetails } = this.state;
-
+        //List of chat rooms. 
         const list = [
             {
                 name: 'Chat Room 1',
+                subtitle: 'Enter Chat room 1',
+                page: 'Chat',
             },
             {
                 name: 'Chat Room 2',
+                subtitle: 'Identical to Chat Room 1',
+                list: 'Chat2',
             },
         ];
 
+        //The views here check if the user is logged in to google or not and displays different things accordingly
         return (
             <View style={styles.container}>
-              
+                
                 <View style={this.state.GoogleLogin ? { display: "none" } : styles.signinContainer}>
                     <GoogleSigninButton
                         style={styles.googleButton}
@@ -52,32 +58,34 @@ class HomeScreen extends Component {
                         onPress={this.fbSignIn}
                     />
                 </View>
-
+           
                 <View style={this.state.GoogleLogin ? styles.userDetailContainer : { display: 'none' }}>
                     <Text style={styles.txtEmail}>{this.state.userDetails.email}</Text>
                     <Text style={styles.txtName}>{this.state.userDetails.name}</Text>
                     <Button color="#FF5722" title='Logout' onPress={this.signOut}></Button>
                 </View>
-
+                
                 <View style={this.state.GoogleLogin ? styles.listContainer : { display: 'none' }}>
                     {
+                        //Our list is displayed here
                         list.map((l) => (
                             <ListItem
                                 key={l.name}
                                 title={l.name}
+                                subtitle={l.subtitle}
                                 onPress={() => this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })}
                                 chevron
-                        />
-                    ))
-                }
+                            />
+                        ))
+                    }
                 </View>
             </View>
         )
     }
 
+    //The google signin function. 
     onLoginGoogle = async () => {
         try {
-            // add any configuration settings here:
             await GoogleSignin.configure();
 
             const data = await GoogleSignin.signIn();
@@ -87,7 +95,7 @@ class HomeScreen extends Component {
             })
 
             if (data.isCancelled) {
-                // handle this however suites the flow of your app
+                // Attempt at giving the user an alert if they cancel sign in. Not sure what aint working. 
                 Alert.alert(
                     'User cancelled request',
                     [
@@ -102,8 +110,7 @@ class HomeScreen extends Component {
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
             // login with credential
             const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
-                .then((data) => {
-                    //this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })
+                .then((data) => {                  
                 })
 
                 .catch((error) => {
@@ -115,7 +122,7 @@ class HomeScreen extends Component {
         }
     }
 
-
+    //The facebook sign in. Does not quite work. Facebook login screen opens, but user never gets past the LoginManager. 
     fbSignIn = async () => {
         try {
             const result = await LoginManager.logInWithReadPermissions(['email', 'password'])
@@ -150,7 +157,7 @@ class HomeScreen extends Component {
             console.error(e);
         }
     }
-
+    //The function that signs out the user when logout is pressed. 
     signOut = async () => {
         try {
             await GoogleSignin.revokeAccess();
@@ -164,6 +171,7 @@ class HomeScreen extends Component {
             console.error(error);
 
         }
+        //Was intended to be the Facebook logout function, but as the facebook login never worked properly i never finished it. 
         /*   try {
                await LoginManager.revokeAccess();
                await LoginManager.signOut();
@@ -181,6 +189,8 @@ const Rootstack = createStackNavigator(
     {
         Home: HomeScreen,
         Chat: ChatScreen,
+        Chat2: ChatScreen2,
+
 
     },
     {

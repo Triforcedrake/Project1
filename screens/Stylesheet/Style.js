@@ -1,4 +1,4 @@
-﻿//The style sheet for most of the app scenes. 
+﻿//The style sheet 
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -47,6 +47,8 @@ export default styles = StyleSheet.create({
         flexDirection: 'column',
         alignSelf: 'center',
         width: '100%',
+        position: 'absolute',
+        bottom: 35,
     },
     titles: {
         color: 'blue',

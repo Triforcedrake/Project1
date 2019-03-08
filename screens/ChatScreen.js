@@ -1,3 +1,4 @@
+//The main chat screen
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; 
 import { View, ImageBackground } from 'react-native';

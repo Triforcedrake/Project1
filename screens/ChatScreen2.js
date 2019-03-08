@@ -1,10 +1,11 @@
+//This screen was intended to be the second chat scrren. It is just a copy of it for now. 
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; 
 import { View, ImageBackground } from 'react-native';
 
 import Fire from './Fire';
 
-class ChatScreen extends React.Component {
+class ChatScreen2 extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
         title: (navigation.state.params || {}).name || 'Chat!',
@@ -44,4 +45,4 @@ class ChatScreen extends React.Component {
     }
 }
 
-export default ChatScreen;
+export default ChatScreen2;
