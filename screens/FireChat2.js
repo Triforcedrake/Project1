@@ -1,5 +1,6 @@
 //Firebase setup for handling the chat system
 import firebase from 'firebase'; // 4.8.1
+import firebaseApp from './config/fireConfig';
 
 class Fire {
     constructor() {
@@ -8,14 +9,8 @@ class Fire {
     }
 
     init = () =>
-        firebase.initializeApp({
-            apiKey: "AIzaSyC02Mx0TmUsBaM1R7XCA9mG3Y1YQ6IZcs4",
-            authDomain: "awesomeproject-1548233775133.firebaseapp.com",
-            databaseURL: "https://awesomeproject-1548233775133.firebaseio.com",
-            projectId: "awesomeproject-1548233775133",
-            storageBucket: "awesomeproject-1548233775133.appspot.com",
-            messagingSenderId: "931119102286"
-        });
+        firebaseApp;
+     
 
     observeAuth = () =>
         firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
@@ -36,7 +31,7 @@ class Fire {
     //This defines where the chat is stored. Duplicating all code here and changing this value would allow you setup a new chat room easily,
     //but I am certain that there is a more efficient way to do. 
     get ref() {
-        return firebase.database().ref('messages');
+        return firebase.database().ref('Chat2');
     }
 
     parse = snapshot => {

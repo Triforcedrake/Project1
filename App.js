@@ -17,32 +17,45 @@ class HomeScreen extends Component {
         title: 'Welcome',
     });
 
+    state = { userDetails: '', GoogleLogin: false, }
+
     componentDidMount() {
         SplashScreen.hide();
     }
 
-    state = { userDetails: '', GoogleLogin: false, }
+    //an attempt at detecting existing login, almost works, but gets error on logout.
+    /*componentDidMount() {
+        this.authSubscription = firebase.auth().onAuthStateChanged((data) => {
+            this.setState({
+                GoogleLogin: true,
+                userDetails: data,
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        this.authSubscription();
+    } */
 
     render() {
-        const { userDetails } = this.state;
         //List of chat rooms. 
         const list = [
             {
                 name: 'Chat Room 1',
-                subtitle: 'Enter Chat room 1',
+                subtitle: 'For good heroes',
                 page: 'Chat',
             },
             {
                 name: 'Chat Room 2',
-                subtitle: 'Identical to Chat Room 1',
-                list: 'Chat2',
+                subtitle: 'For evil deeds',
+                page: 'Chat2',
             },
         ];
 
         //The views here check if the user is logged in to google or not and displays different things accordingly
         return (
             <View style={styles.container}>
-                
+
                 <View style={this.state.GoogleLogin ? { display: "none" } : styles.signinContainer}>
                     <GoogleSigninButton
                         style={styles.googleButton}
@@ -58,13 +71,13 @@ class HomeScreen extends Component {
                         onPress={this.fbSignIn}
                     />
                 </View>
-           
+
                 <View style={this.state.GoogleLogin ? styles.userDetailContainer : { display: 'none' }}>
                     <Text style={styles.txtEmail}>{this.state.userDetails.email}</Text>
                     <Text style={styles.txtName}>{this.state.userDetails.name}</Text>
                     <Button color="#FF5722" title='Logout' onPress={this.signOut}></Button>
                 </View>
-                
+
                 <View style={this.state.GoogleLogin ? styles.listContainer : { display: 'none' }}>
                     {
                         //Our list is displayed here
@@ -73,7 +86,7 @@ class HomeScreen extends Component {
                                 key={l.name}
                                 title={l.name}
                                 subtitle={l.subtitle}
-                                onPress={() => this.props.navigation.navigate('Chat', { name: this.state.userDetails.name })}
+                                onPress={() => this.props.navigation.navigate(l.page, { name: this.state.userDetails.name })}
                                 chevron
                             />
                         ))
@@ -110,7 +123,7 @@ class HomeScreen extends Component {
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
             // login with credential
             const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
-                .then((data) => {                  
+                .then((data) => {
                 })
 
                 .catch((error) => {
@@ -157,6 +170,7 @@ class HomeScreen extends Component {
             console.error(e);
         }
     }
+
     //The function that signs out the user when logout is pressed. 
     signOut = async () => {
         try {

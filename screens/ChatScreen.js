@@ -3,7 +3,7 @@ import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; 
 import { View, ImageBackground } from 'react-native';
 
-import Fire from './Fire';
+import Fire from './FireChat1';
 
 class ChatScreen extends React.Component {
 
