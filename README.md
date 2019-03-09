@@ -1,5 +1,5 @@
 # Project1
-This project was created as part of a test and uses Google and Facebook sign in in conjunction with Firebase database to sign the user into one of two chat rooms. These chat rooms are also handled via Firebase database setup and allow communication between the logged in parties. 
+This project was created as part of a test and uses the React-Native framework to implement Google and Facebook sign in in conjunction with Firebase database to sign the user into one of two chat rooms. These chat rooms are also handled via Firebase database setup and allow communication between the logged in parties. 
 
 Note: This project is not fully functional in all aspects and should not be used as a definitive solution. 
 
