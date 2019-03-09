@@ -18,7 +18,7 @@ and wait for it to finish.
 
 *Before running android build, setup Android Studio*
 
-Step 4: Run the project on the Android device of your choosing or a virtual device, by way of the following command.  
+Step 4: Run the project on the Android device of your choosing or a virtual device, by way of the following command or by importing it to Android Studio and running it from there.  
 
 ```
 $ React-Native Run-Android
