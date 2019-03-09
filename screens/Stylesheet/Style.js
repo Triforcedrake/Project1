@@ -37,11 +37,6 @@ export default styles = StyleSheet.create({
         height: 50,
         alignSelf: 'center',
     },
-    subtitleView: {
-        flexDirection: 'row',
-        paddingLeft: 10,
-        paddingTop: 5
-    },
     listContainer: {
         flex: 1,
         flexDirection: 'column',
@@ -49,8 +44,5 @@ export default styles = StyleSheet.create({
         width: '100%',
         position: 'absolute',
         bottom: 35,
-    },
-    titles: {
-        color: 'blue',
     },
 })

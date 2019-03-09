@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, Image, Button, ImageBackground, FlatList, Alert, StyleSheet } from 'react-native'
-import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
+import { View, Text, Image, Button, Alert, StyleSheet } from 'react-native'
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin'
 import { AccessToken, LoginManager, LoginButton } from 'react-native-fbsdk'
 import { createStackNavigator, createAppContainer, } from 'react-navigation'
 import { ListItem, List, } from 'react-native-elements'
@@ -181,10 +181,11 @@ class HomeScreen extends Component {
                 userDetails: '',
                 GoogleLogin: false,
             });
-        } catch (error) {
-            console.error(error);
-
         }
+        catch (error) {
+            console.error(error);
+        }
+
         //Was intended to be the Facebook logout function, but as the facebook login never worked properly i never finished it. 
         /*   try {
                await LoginManager.revokeAccess();
