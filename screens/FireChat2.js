@@ -1,4 +1,5 @@
-//Firebase setup for handling the chat system
+//Firebase setup for handling the chat system. This is the second chat screen
+//I am quite certain a more streamlined way to add multiple chat rooms exists, but I could not find it in the time I spent. 
 import firebase from 'firebase'; // 4.8.1
 import firebaseApp from './config/fireConfig';
 
@@ -28,8 +29,7 @@ class Fire {
     get uid() {
         return (firebase.auth().currentUser || {}).uid;
     }
-    //This defines where the chat is stored. Duplicating all code here and changing this value would allow you setup a new chat room easily,
-    //but I am certain that there is a more efficient way to do. 
+    //This defines where the chat is stored. 
     get ref() {
         return firebase.database().ref('Chat2');
     }

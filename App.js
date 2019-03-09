@@ -24,6 +24,7 @@ class HomeScreen extends Component {
     }
 
     //an attempt at detecting existing login, almost works, but gets error on logout.
+
     /*componentDidMount() {
         this.authSubscription = firebase.auth().onAuthStateChanged((data) => {
             this.setState({
@@ -109,7 +110,7 @@ class HomeScreen extends Component {
 
             if (data.isCancelled) {
                 // Attempt at giving the user an alert if they cancel sign in. Not sure what aint working. 
-                Alert.alert(
+                () => Alert.alert(
                     'User cancelled request',
                     [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -119,7 +120,7 @@ class HomeScreen extends Component {
             }
 
             this.setState({ data });
-            // create a new firebase credential with the token
+            // create a new firebase credential with the token       
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
             // login with credential
             const firebaseUserCredential = await firebase.auth().signInWithCredential(credential)
@@ -142,7 +143,7 @@ class HomeScreen extends Component {
                 .then(
                     (result) => {
                         if (result.isCancelled) {
-                            Alert.alert(
+                            () => Alert.alert(
                                 'User cancelled request',
                                 [
                                     { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -150,7 +151,6 @@ class HomeScreen extends Component {
                                 { cancelable: false },
                             );
                         } else {
-
                             AccessToken.getCurrentAccessToken()
                                 .then((data) => {
                                     const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
