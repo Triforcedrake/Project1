@@ -28,7 +28,7 @@ or by importing it to Android Studio and running it from there.
 The project was tested and run succesfully on a Samsung Galaxy Phone (Android 5.1.1, API 22)
 And a Nexus 5X API Oreo 27 virtual device. IOS is untested. 
 
-##Known Instalation Issues
+## Known Instalation Issues
 A issue I ran into when first running the downloaded github folder was an error code: 500 related to not beeing able to resolve a module. In this case it was the import path from App.js to the Stylesheet. The error resulted in the Stylesheet part of
 
 ```
