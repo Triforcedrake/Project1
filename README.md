@@ -18,11 +18,13 @@ and wait for it to finish.
 
 *Before running android build, setup Android Studio*
 
-Step 4: Run the project on the Android device of your choosing or a virtual device, by way of the following command or by importing it to Android Studio and running it from there.  
+Step 4: Run the project on the Android device of your choosing or a virtual device, by way of the following command 
 
 ```
 $ React-Native Run-Android
 ```
+or by importing it to Android Studio and running it from there.  
+
 The project was tested and run succesfully on a Samsung Galaxy Phone (Android 5.1.1, API 22)
 And a Nexus 5X API Oreo 27 virtual device. IOS is untested. 
 
