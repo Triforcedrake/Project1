@@ -23,7 +23,12 @@ Step 4: Run the project on the Android device of your choosing or a virtual devi
 ```
 $ React-Native Run-Android
 ```
-or by importing it to Android Studio and running it from there.  
+
+or by importing it to Android Studio, running it from there and using the command 
+
+```
+$ React-Native start
+```
 
 The project was tested and run succesfully on a Samsung Galaxy Phone (Android 5.1.1, API 22)
 And a Nexus 5X API Oreo 27 virtual device. IOS is untested. 
