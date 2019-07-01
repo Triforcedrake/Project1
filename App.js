@@ -23,21 +23,6 @@ class HomeScreen extends Component {
         SplashScreen.hide();
     }
 
-    //an attempt at detecting existing login, almost works, but gets error on logout.
-
-    /*componentDidMount() {
-        this.authSubscription = firebase.auth().onAuthStateChanged((data) => {
-            this.setState({
-                GoogleLogin: true,
-                userDetails: data,
-            });
-        });
-    }
-
-    componentWillUnmount() {
-        this.authSubscription();
-    } */
-
     render() {
         //List of chat rooms. 
         const list = [
